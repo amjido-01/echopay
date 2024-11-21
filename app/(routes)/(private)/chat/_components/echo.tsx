@@ -1,15 +1,7 @@
 "use client";
 
-import React, { use, useEffect, useRef, useState, useTransition } from "react";
-import {
-  Mic,
-  Pause,
-  Play,
-  X,
-  SendHorizonal,
-  Loader,
-  Volume2,
-} from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { Mic, Pause, Play, X, SendHorizonal } from "lucide-react";
 import { Drawer, DrawerContent } from "@/components/ui/drawer";
 import useEcho from "@/hooks/use-echo";
 import useChat from "@/hooks/use-chat";
@@ -26,6 +18,8 @@ import { owner } from "@/store";
 import useNewTransaction from "@/hooks/use-new-transaction";
 import useShowChart from "@/hooks/use-show-chart";
 import useBookKeeping from "@/hooks/use-book-keeping";
+import FourDotLoader from "@/components/ui/four-dot-loader";
+import ThreeDotLoader from "@/components/ui/three-dot-loader";
 
 declare global {
   interface Window {
@@ -400,41 +394,8 @@ const Echo = () => {
               data={newTransaction}
               setNewTransaction={setNewTransaction}
             />
-            {isThinking && (
-              <div className="flex flex-col items-center gap-4 mb-4">
-                <div className="flex gap-2">
-                  {[1, 2, 3].map((i) => (
-                    <div
-                      key={i}
-                      className="w-4 h-4 rounded-full bg-theme-primary animate-pulse"
-                      style={{
-                        animationDelay: `${i * 0.15}s`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-600 animate-pulse">
-                  Thinking...
-                </span>
-              </div>
-            )}
-            {isSpeaking && (
-              <div className="flex flex-col items-center gap-4 mb-4">
-                <div className="flex gap-1 h-8 items-center">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div
-                      key={i}
-                      className="w-1 bg-theme-primary rounded-full animate-[speaking_0.5s_ease-in-out_infinite]"
-                      style={{
-                        height: `${Math.random() * 100}%`,
-                        animationDelay: `${i * 0.1}s`,
-                      }}
-                    />
-                  ))}
-                </div>
-                <span className="text-sm text-gray-600">Speaking...</span>
-              </div>
-            )}
+            {isThinking && <FourDotLoader />}
+            {isSpeaking && <ThreeDotLoader />}
             {!isThinking && !isSpeaking && (
               <div
                 className={`flex w-auto gap-1 h-20 max-w-xs mx-auto items-center justify-center ${

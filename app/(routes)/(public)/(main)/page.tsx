@@ -4,7 +4,6 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import axios from "axios";
-import LoginPage from "../login/page";
 import useUserInfo from "@/hooks/use-userinfo";
 import MobileInput from "./_components/mobile-input";
 import SplashSlides from "./_components/splash-slides";
@@ -14,13 +13,13 @@ import UpsetPassword from "@/components/ui/upset-password";
 import SlideContainer from "@/components/slide-container";
 import LanguageSelector from "@/components/language-selector";
 import { useRouter } from "next/navigation";
-import ExistingUserLogin from "@/components/ui/ExistingUserLogin";
 
 import { Inbox, Eye } from "lucide-react";
 import { InputWithIcon } from "@/components/ui/input-with-icon";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { speak } from "@/lib/utils";
+import useVisitor from "@/hooks/use-visitor";
 
 const OnboardingPage = () => {
   const [stage, setStage] = useState(0);
@@ -46,6 +45,7 @@ const OnboardingPage = () => {
 
   const router = useRouter();
   const { setInfo, info } = useUserInfo();
+  const { hasVisited, setVisit } = useVisitor();
 
   useEffect(() => {
     setIsMounted(true);
@@ -60,7 +60,12 @@ const OnboardingPage = () => {
       if (info) {
         router.push("/dashboard");
       } else {
-        setStage(1);
+        if (hasVisited) {
+          setStage(4);
+        } else {
+          setStage(1);
+          setVisit(true);
+        }
       }
     }, 3000);
 
@@ -114,8 +119,6 @@ const OnboardingPage = () => {
           phone: mobile,
         }
       );
-
-      console.log(response.data.responseBody, "fom otp");
 
       if (response.status === 200) {
         setIsVerifying(false);
